@@ -95,6 +95,7 @@ DATABASES = {
         'NAME': 'meiduo_mall_46' # 数据库名字
     },
 }
+AUTH_USER_MODEL = 'users.User'
 
 
 # Password validation
@@ -200,3 +201,4 @@ LOGGING = {
         },
     }
 }
+
