@@ -25,7 +25,7 @@ SECRET_KEY = '&ftxb6u2o(1h!0=r4^0hgh)612wfxhv03#c^ibta&34*ql4a6@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','www.meiduo.site']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.users',
+    'apps.users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -53,10 +55,12 @@ ROOT_URLCONF = 'meiduo_demo.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2。',
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
+            'environment': 'utils.jinja2.environment',#默认配置
+
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -64,7 +68,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
             ],
-        'environment': 'utils.jinja2_env.jinja2_environment'
+
         },
     },
 ]
