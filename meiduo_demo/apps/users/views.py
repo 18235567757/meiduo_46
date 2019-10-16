@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -5,6 +7,7 @@ from django.shortcuts import render
 from django.views import View
 import re
 from django import http
+
 
 
 class RegisterView(View):
@@ -33,3 +36,12 @@ class RegisterView(View):
             return http.HttpResponseBadRequest('两次输入的密码不一样')
         if not re.match(r'^1[3-9]\d{9}$', mobile):
             return http.HttpResponseBadRequest('请输入正确的手机号')
+        # 判断是否勾选用户协议
+        if allow != 'on':
+            return http.HttpResponseBadRequest('请勾选用户协议')
+
+        User.objects.create_user(username=username,
+                                 password=password,
+                                 mobile=mobile,
+                                 )
+        return HttpResponse('OK')
