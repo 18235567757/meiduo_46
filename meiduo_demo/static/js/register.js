@@ -61,6 +61,27 @@ var vm = new Vue({
             var re = /^[a-zA-Z0-9_-]{5,20}$/;
             if (re.test(this.username)) {
                 this.error_name = false;
+                let url = '/usernames/' + this.username +'/count/'
+                axios.get(url,{
+                    responseType:'json'
+                })
+
+                    .then(response=>{
+                    //    请求成功的判断
+                        if (response.data.count==1){
+                            this.error_name_message = '用户名已存在'
+                            this.error_name = true;
+                        }else{
+                            this.error_name = false;
+                        }
+
+
+                    })
+                    .catch(error=>{
+                    //    请求失败显示的错误
+                        console.log(error.response);
+                    })
+
             } else {
                 this.error_name_message = '请输入5-20个字符的用户名';
                 this.error_name = true;
@@ -90,6 +111,11 @@ var vm = new Vue({
             var re = /^1[345789]\d{9}$/;
             if (re.test(this.mobile)) {
                 this.error_phone = false;
+                let url = ''
+                axios.get(url,{
+
+
+                })
             } else {
                 this.error_mobile_message = '您输入的手机号格式不正确';
                 this.error_phone = true;

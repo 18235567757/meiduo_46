@@ -50,3 +50,18 @@ class RegisterView(View):
 
         login(request, user=username)
         return redirect(reverse('contens:index'))
+
+
+class UsernameCountView(View):
+    """
+    判断用户名是否重复注册
+    """
+    def get(self, request, username):
+
+        count=User.objects.filter(username=username).count()
+
+        return http.JsonResponse({'code': 200, 'errmsg': 'OK', 'count': count})
+
+
+
+
