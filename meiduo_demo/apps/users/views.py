@@ -1,13 +1,16 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import login
+from apps.users.models import User
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.shortcuts import render
+from django.urls import reverse
 from django.views import View
 import re
 from django import http
 
+from apps import users
 
 
 class RegisterView(View):
@@ -27,7 +30,7 @@ class RegisterView(View):
         if not all([username, password, password2, mobile, allow]):
             return http.HttpResponseBadRequest('缺少必传参数')
         # 判断用户名是否是5-20个字符
-        if not re.match(r'^[a-zA-Z0-9]{5,20}$', username):
+        if not re.match(r'^[a-zA-Z0-9_]{5,20}$', username):
             return http.HttpResponseBadRequest('请输入5-20个字符的用户名')
         # 判断密码是否为8-20个字符
         if not re.match(r'^[0-9a-zA-Z]{8,20}$', password):
@@ -44,4 +47,6 @@ class RegisterView(View):
                                  password=password,
                                  mobile=mobile,
                                  )
-        return HttpResponse('OK')
+
+        login(request, user=username)
+        return redirect(reverse('contens:index'))

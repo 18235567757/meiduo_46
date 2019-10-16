@@ -35,5 +35,6 @@ def test(request):
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^test/$', test),
-    url(r'^', include('apps.users.urls', namespace='users'))
+    url(r'^', include('apps.users.urls', namespace='users')),
+    url(r'^', include('apps.contens.urls', namespace='contens')),
 ]
