@@ -108,20 +108,39 @@ var vm = new Vue({
         },
         // 检查手机号
         check_mobile: function () {
-            var re = /^1[345789]\d{9}$/;
+            var re = /^1[3-9]\d{9}$/;
             if (re.test(this.mobile)) {
                 this.error_phone = false;
-                let url = ''
+                let url = '/mobiles/' + this.mobile + '/count/'
                 axios.get(url,{
-
+                    responseType:'json'
 
                 })
-            } else {
-                this.error_mobile_message = '您输入的手机号格式不正确';
-                this.error_phone = true;
-            }
+                    .then(response=>{
+                    //    请求成功的判断
+                        if (response.data.count==1){
+                            this.error_mobile_message = '手机号已存在'
+                            this.error_mobile = true;
+                        }else{
+                            this.error_mobile = false;
 
-        },
+                        }
+
+                    })
+                    .catch(error=>{
+
+                    //    请求失败显示的错误
+                        console.log(error.response);
+
+
+                    })
+
+                    } else {
+                        this.error_mobile_message = '您输入的手机号格式不正确';
+                        this.error_phone = true;
+                    }
+
+                },
         // 检查图片验证码
         check_image_code: function () {
             if (!this.image_code) {

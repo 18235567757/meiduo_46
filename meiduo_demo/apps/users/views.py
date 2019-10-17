@@ -35,7 +35,7 @@ class RegisterView(View):
         # 判断密码是否为8-20个字符
         if not re.match(r'^[0-9a-zA-Z]{8,20}$', password):
             return http.HttpResponseBadRequest('请输入8-20位的密码')
-        if password!=password2:
+        if password != password2:
             return http.HttpResponseBadRequest('两次输入的密码不一样')
         if not re.match(r'^1[3-9]\d{9}$', mobile):
             return http.HttpResponseBadRequest('请输入正确的手机号')
@@ -63,5 +63,9 @@ class UsernameCountView(View):
         return http.JsonResponse({'code': 200, 'errmsg': 'OK', 'count': count})
 
 
+class MobileCountView(View):
+    #  判断手机号是否重复
+    def get(self,request, mobile):
+        count=User.objects.filter(mobile=mobile).count()
 
-
+        return http.JsonResponse({'code': 200, 'errmsg': 'OK', 'count': count})
