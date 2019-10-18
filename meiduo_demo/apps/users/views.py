@@ -104,4 +104,8 @@ class LogView(View):
         else:
             request.session.set_expiry(None)
         # 405 没有实现对应的方法
-        return redirect(reverse('contens:index'))
+        response = redirect(reverse('contens:index'))
+
+        response.set_cookie('username', user.username, max_age=3600*24*14)
+
+        return response

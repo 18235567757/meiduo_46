@@ -208,3 +208,7 @@ LOGGING = {
     }
 }
 
+# 认证后端
+AUTHENTICATION_BACKENDS=[
+    'apps.users.utils.UsernameMobileAuthBackend'
+]
