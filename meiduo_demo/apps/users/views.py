@@ -1,11 +1,14 @@
 from django.contrib.auth import login
+from django.http import HttpResponseBadRequest
+from django.urls import reverse
+
 from apps.users.models import User
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
-
+# from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate
 # Create your views here.
-from django.shortcuts import render
-from django.urls import reverse
+from django.shortcuts import redirect, render
+
 from django.views import View
 import re
 from django import http
@@ -43,12 +46,12 @@ class RegisterView(View):
         if allow != 'on':
             return http.HttpResponseBadRequest('请勾选用户协议')
 
-        User.objects.create_user(username=username,
+        user = User.objects.create_user(username=username,
                                  password=password,
                                  mobile=mobile,
                                  )
 
-        login(request, user=username)
+        login(request, user)
         return redirect(reverse('contens:index'))
 
 
@@ -69,3 +72,36 @@ class MobileCountView(View):
         count=User.objects.filter(mobile=mobile).count()
 
         return http.JsonResponse({'code': 200, 'errmsg': 'OK', 'count': count})
+
+
+class LogView(View):
+
+    def get(self, request):
+
+        return render(request, 'login.html')
+
+    def post(self, request):
+
+        data = request.POST
+        username = data.get('username')
+        password = data.get('pwd')
+        remb = data.get('remembered')
+
+        if not all([username, password, remb]):
+            return HttpResponseBadRequest('缺少必传参数')
+        if not re.match(r'^[a-z0-9A-Z]{5,20}$', username):
+            return http.HttpResponseBadRequest('您的用户名不合法')
+        if not re.match(r'^[a-z0-9A-Z_]{8,20}$', password):
+            return http.HttpResponseBadRequest('你的密码输入不合法')
+
+        # user = authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password)
+        if user is None:
+            return http.HttpResponseBadRequest('请输入正确的用户名或密码')
+        login(request, user)
+        if remb != 'on':
+            request.session.set_expiry(0)
+        else:
+            request.session.set_expiry(None)
+        # 405 没有实现对应的方法
+        return redirect(reverse('contens:index'))
