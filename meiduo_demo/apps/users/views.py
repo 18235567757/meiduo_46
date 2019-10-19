@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
 
@@ -73,7 +73,7 @@ class MobileCountView(View):
 
         return http.JsonResponse({'code': 200, 'errmsg': 'OK', 'count': count})
 
-
+# 用户登录
 class LogView(View):
 
     def get(self, request):
@@ -108,4 +108,15 @@ class LogView(View):
 
         response.set_cookie('username', user.username, max_age=3600*24*14)
 
+        return response
+
+class LogoutView(View):
+
+    def get(self, request):
+
+        # 清理session
+        logout(request)
+        response = redirect(reverse('contens:index'))
+
+        response.delete_cookie('username')
         return response
