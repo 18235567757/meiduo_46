@@ -1,7 +1,9 @@
+import json
+from django.utils.response_code import c
 from django.contrib.auth import login, logout
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.users.models import User
 from django.http import HttpResponse
 # from django.shortcuts import render,redirect
@@ -73,6 +75,7 @@ class MobileCountView(View):
 
         return http.JsonResponse({'code': 200, 'errmsg': 'OK', 'count': count})
 
+
 # 用户登录
 class LogView(View):
 
@@ -110,6 +113,7 @@ class LogView(View):
 
         return response
 
+
 class LogoutView(View):
 
     def get(self, request):
@@ -120,3 +124,45 @@ class LogoutView(View):
 
         response.delete_cookie('username')
         return response
+
+
+class UserCenterInfo(LoginRequiredMixin, View):
+
+    def get(self, request):
+        context = {
+            'username':request.user.username,
+            'mobile':request.user.mobile,
+            'email':request.user.email,
+            'email_active':request.user.email_active
+        }
+
+        # netx = request.GET.get('next')
+        #
+        # if netx:
+        #     response = redirect(next)
+        #
+        # else:
+        #     response = redirect(reverse('users:login'))
+
+        return render(request, 'user_center_info.html', context=context)
+
+
+class EmailView(View):
+
+    def put(self, request):
+        # 拿到数据
+        json_dict = json.loads(request.body.decode())
+        email = json_dict.get('email')
+        # 校验参数
+        if not email:
+            return http.HttpResponseBadRequest('缺少email参数')
+        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+            return http.HttpResponseBadRequest('参数email有误')
+
+        try:
+            User.objects.create(email=email)
+        except Exception:
+            return http.JsonResponse({'code':0, 'errmsg': '添加邮箱失败'})
+
+        return http.JsonResponse({'code': 200, 'errmsg': '添加邮箱成功'})
+
