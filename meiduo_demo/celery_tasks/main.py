@@ -13,10 +13,10 @@ celery_app.config_from_object('celery_tasks.config')
 
 # 让celery自动检测我们的任务
 # 列表元素的值就是任务的包路径
-celery_app.autodiscover_tasks(['celery_task.sms'])
+celery_app.autodiscover_tasks(['celery_task.sms', 'celery_task.email'])
 
 # 运行消费者
 
-# 语法　celery -A proj worker -l info
+# 语法　celery -A proj worker -l infoex
 # proj 指的是celery实力对象的脚本路径
 # celery -A celery_tasks.main worker -l info

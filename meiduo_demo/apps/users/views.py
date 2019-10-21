@@ -1,5 +1,5 @@
 import json
-from django.utils.response_code import c
+
 from django.contrib.auth import login, logout
 from django.http import HttpResponseBadRequest
 from django.urls import reverse
@@ -16,6 +16,7 @@ import re
 from django import http
 
 from apps import users
+from utils.response_code import RETCODE
 
 
 class RegisterView(View):
@@ -158,11 +159,70 @@ class EmailView(View):
             return http.HttpResponseBadRequest('缺少email参数')
         if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
             return http.HttpResponseBadRequest('参数email有误')
+        # 更新数据
+        request.user.email = email
+        request.user.save()
+        # from django.core.mail import send_mail
+        # # 标题
+        # subject = '你好'
+        # # 内容
+        # message ='我是xxx'
+        # # 发件人
+        # from_email ='qi_rui_hua@163.com'
+        # # 收件人列表
+        # recipient_list= ['18235567757@163.com']
+        #
+        # html_message = "<a href='http://www.meiduo.site:8000/emailsactive/?user_id=1'>戳我有惊喜</a>"
+        # send_mail(subject=subject,
+        #           message=message,
+        #           from_email=from_email,
+        #           recipient_list=recipient_list,
+        #           html_message=html_message)
+
+        # try:
+        #     User.objects.create(email=email)
+        # except Exception:
+        #     return http.JsonResponse({'code':0, 'errmsg': '添加邮箱失败'})
+        from celery_tasks.email.tasks import send_verify_email
+        send_verify_email.delay(request.user.id, email)
+
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '添加邮箱成功'})
+
+from apps.users.utils import *
+
+
+class EmailActiveView(View):
+
+    def get(self, request):
+        # 获取token信息
+        token = request.GET.get('token')
+
+        if token is None:
+            return http.HttpResponseBadRequest('缺少参数')
+        # 信息解密
+        data = check_active_token(token)
+
+        if data is None:
+            return http.HttpResponseBadRequest('认证失败')
+        # 根据用户信息进行数据的更新
+        id = data.get('id')
+        email = data.get('email')
 
         try:
-            User.objects.create(email=email)
-        except Exception:
-            return http.JsonResponse({'code':0, 'errmsg': '添加邮箱失败'})
+            user = User.objects.get(id=id, email=email)
+        except User.DoesNotExist:
+            return http.HttpResponseBadRequest('验证失败')
 
-        return http.JsonResponse({'code': 200, 'errmsg': '添加邮箱成功'})
+        user.email_active = True
+        user.save()
 
+        # 跳转到指定页面
+        return redirect(reverse('users:conter'))
+
+
+class AddressView(LoginRequiredMixin, View):
+    """用户收货地址"""
+
+    def get(self, request):
+        """提供收货地址界面"""
+        return render(request, 'user_center_site.html')

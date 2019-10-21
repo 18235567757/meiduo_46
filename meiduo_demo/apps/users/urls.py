@@ -9,7 +9,14 @@ urlpatterns = [
     url(r'^login/$', views.LogView.as_view(), name='login'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^center/$', views.UserCenterInfo.as_view(), name='center'),
-    url(r'^email/$', views.EmailView.as_view(), name='email')
+    url(r'^emails/$', views.EmailView.as_view(), name='email'),
+    url(r'^emailsactive/$', views.EmailActiveView.as_view(), name='emailsactive'),
+
+
+
+
+
+
 ]
 
 

@@ -42,3 +42,37 @@ class UsernameMobileAuthBackend(ModelBackend):
 
         if user is not None and user.check_password(password):
             return user
+
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from meiduo_demo import settings
+from itsdangerous import BadData
+#'http://www.meiduo.site:8000/emailsactive/?token=%s'%token
+
+
+def generic_active_email_url(id,email):
+    # 创建加密实例对象
+    s = Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+    # 组织数据
+    data = {
+        'id':id,
+        'email':email,
+    }
+    # 加密
+    serect_data = s.dumps(data)
+
+    # 返回数据
+    return 'http://www.meiduo.site:8000/emailsactive/?token=%s' % serect_data.decode()
+
+
+def check_active_token(token):
+    # 创建实例对象
+    s = Serializer(secret_key=settings.SECRET_KEY, expires_in=3600)
+
+    # 解密
+    try:
+        data = s.loads(token)
+    except BadData:
+        return None
+
+    # 返回数据
+    return data

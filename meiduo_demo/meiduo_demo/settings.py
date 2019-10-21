@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.users',
     'apps.oauth',
+    'apps.areas',
 
 ]
 
@@ -223,3 +224,14 @@ QQ_REDIRECT_URI = 'http://www.meiduo.site:8000/oauth_callback'
 
 # 搭配LoginRequiredMixin表示当用户未通过登录验证时，将用户重定向到登录页面。
 LOGIN_URL = '/login/'
+
+# 邮件服务器
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+#发送邮件的邮箱
+EMAIL_HOST_USER = '18235567757@163.com'
+#在邮箱中设置的客户端授权密码
+EMAIL_HOST_PASSWORD = 'hetong123'
+#收件人看到的发件人
+EMAIL_FROM = '美多商城<18235567757@163.com>'
