@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.oauth',
     'apps.areas',
+    'apps.contens',
+    'apps.goods',
+
 
 ]
 
