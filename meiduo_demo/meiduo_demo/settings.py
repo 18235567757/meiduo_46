@@ -25,7 +25,7 @@ SECRET_KEY = '&ftxb6u2o(1h!0=r4^0hgh)612wfxhv03#c^ibta&34*ql4a6@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','www.meiduo.site']
+ALLOWED_HOSTS = ['127.0.0.1', 'www.meiduo.site']
 
 
 # Application definition
@@ -238,3 +238,9 @@ EMAIL_HOST_USER = '18235567757@163.com'
 EMAIL_HOST_PASSWORD = 'hetong123'
 #收件人看到的发件人
 EMAIL_FROM = '美多商城<18235567757@163.com>'
+
+# 指定Django中的文件存储类
+DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FastDFSStorage'
+
+
+
