@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>美多商城-商品列表</title>
-    <link rel="stylesheet" type="text/css" href="{{ static('css/jquery.pagination.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ static('css/reset.css') }}">
+	<title>美多商城-商品详情</title>
+    <link rel="stylesheet" type="text/css" href="{{ static('css/reset.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}">
-    <script type="text/javascript" src="{{ static('js/host.js') }}"></script>
-    <script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
+	<script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
     <script type="text/javascript" src="{{ static('js/axios-0.18.0.min.js') }}"></script>
-    <script type="text/javascript" src="{{ static('js/jquery-1.12.4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/common.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/host.js') }}"></script>
+
 </head>
 <body>
 	<div id="app" v-cloak>
@@ -41,7 +41,7 @@
 	</div>
 
 	<div class="search_bar clearfix">
-		<a href="index.html" class="logo fl"><img src="../static/images/logo.png"></a>
+		<a href="../templates/index.html" class="logo fl"><img src="images/logo.png"></a>
 		<div class="search_wrap fl">
 			<form method="get" action="/search/" class="search_con">
                 <input type="text" class="input_text fl" name="q" placeholder="搜索商品">
@@ -81,7 +81,7 @@
 							<div class="list_group">
 								<div class="group_name fl">手机通讯 &gt;</div>
 								<div class="group_detail fl">
-									<a href="list.html">手机</a>
+									<a href="../templates/list.html">手机</a>
 									<a href="#">对讲机</a>
 									<a href="#">以旧换新</a>
 									<a href="#">手机维修</a>
@@ -243,14 +243,13 @@
 							<div class="list_group">
 								<div class="group_name fl">机票 &gt;</div>
 								<div class="group_detail fl">
-									<a href="#">机票</a>					        
+									<a href="#">机票</a>			        
 								</div>
 							</div>
 						</div>
 					</li>
 				</ul>
 			</div>		
-
 
 			<ul class="navlist fl">
 				<li><a href="">首页</a></li>
@@ -263,25 +262,49 @@
 	</div>
 
 	<div class="breadcrumb">
-        <a href="javascript:;">{{ breadcrumb.cat1.name }}</a>
-        <span>></span>
-        <a href="javascript:;">{{ breadcrumb.cat2.name }}</a>
-        <span>></span>
-        <a href="javascript:;">{{ breadcrumb.cat3.name }}</a>
-    </div>
+		<a href="#">全部分类</a>
+		<span>></span>
+		<a href="#">笔记本</a>
+		<span>></span>
+		<a href="#">mac电脑</a>
+	</div>
 
+<div class="goods_detail_con clearfix">
+    <div class="goods_detail_pic fl"><img src="{{ sku.default_image.url }}"></div>
+    <div class="goods_detail_list fr">
+        <h3>{{ sku.name }}</h3>
+        <p>{{ sku.caption }}</p>
+        <div class="price_bar">
+            <span class="show_pirce">¥<em>{{ sku.price }}</em></span>
+            <a href="javascript:;" class="goods_judge">18人评价</a>
+        </div>
+        <div class="goods_num clearfix">
+            <div class="num_name fl">数 量：</div>
+            <div class="num_add fl">
+                <input v-model="sku_count" @blur="check_sku_count" type="text" class="num_show fl">
+                <a @click="on_addition" class="add fr">+</a>
+                <a @click="on_minus" class="minus fr">-</a>
+            </div>
+        </div>
+        {#...商品规格...#}
+        <div class="total" v-cloak>总价：<em>[[ sku_amount ]]元</em></div>
+        <div class="operate_btn">
+            <a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+        </div>
+    </div>
+</div>
 	<div class="main_wrap clearfix">
 		<div class="l_wrap fl clearfix">
 			<div class="new_goods">
 				<h3>热销排行</h3>
 				<ul>
 					<li>
-						<a href="../static/detail.html"><img src="../static/images/goods/goods001.jpg"></a>
+						<a href="detail.html"><img src="images/goods/goods001.jpg"></a>
 						<h4><a href="#">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
 						<div class="price">￥3.90</div>
 					</li>
 					<li>
-						<a href="../static/detail.html"><img src="../static/images/goods/goods002.jpg"></a>
+						<a href="detail.html"><img src="images/goods/goods002.jpg"></a>
 						<h4><a href="#">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
 						<div class="price">￥16.80</div>
 					</li>
@@ -289,67 +312,37 @@
 			</div>
 		</div>
 
-        <div class="r_wrap fr clearfix">
-            <div class="sort_bar">
-                <a href="{{ url('goods:list', args=(category.id, page_num)) }}?sort=default" {% if sort == 'default' %}class="active"{% endif %}>默认</a>
-                <a href="{{ url('goods:list', args=(category.id, page_num)) }}?sort=price" {% if sort == 'price' %}class="active"{% endif %}>价格</a>
-                <a href="{{ url('goods:list', args=(category.id, page_num)) }}?sort=hot" {% if sort == 'hot' %}class="active"{% endif %}>人气</a>
-            </div>
-            <ul class="goods_type_list clearfix">
-                {% for sku in page_skus %}
-                <li>
-                <a href="../static/detail.html"><img src="{{ sku.default_image.url }}"></a>
-                <h4><a href="../static/detail.html">{{ sku.name }}</a></h4>
-                <div class="operate">
-                    <span class="price">￥{{ sku.price }}</span>
-                    <span class="unit">台</span>
-                    <a href="#" class="add_goods" title="加入购物车"></a>
-                </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-			<div class="sort_bar">
-				<a href="#" class="active">默认</a>
-				<a href="#">价格</a>
-				<a href="#">人气</a>
-			</div>
-
-			<ul class="goods_type_list clearfix">
-				<li>
-					<a href="../static/detail.html"><img src="../static/images/goods/goods003.jpg"></a>
-					<h4><a href="../static/detail.html">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-					<div class="operate">
-						<span class="price">￥16.80</span>
-						<span class="unit">台</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-				<li>
-					<a href="#"><img src="../static/images/goods/goods005.jpg"></a>
-					<h4><a href="#">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-					<div class="operate">
-						<span class="price">￥10.00</span>
-						<span class="unit">台</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-				<li>
-					<a href="#"><img src="../static/images/goods/goods002.jpg"></a>
-					<h4><a href="#">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-					<div class="operate">
-						<span class="price">￥28.80</span>
-						<span class="unit">台</span>
-						<a href="#" class="add_goods" title="加入购物车"></a>
-					</div>
-				</li>
-			</ul>
-
-			<div class="pagenation">
-                <div id="pagination" class="page"></div>
-            </div>
-
-		</div>
+		<div class="r_wrap fr clearfix">
+    <ul class="detail_tab clearfix">
+        <li @click="on_tab_content('detail')" :class="tab_content.detail?'active':''">商品详情</li>
+        <li @click="on_tab_content('pack')" :class="tab_content.pack?'active':''">规格与包装</li>
+        <li @click="on_tab_content('service')" :class="tab_content.service?'active':''">售后服务</li>
+        <li @click="on_tab_content('comment')" :class="tab_content.comment?'active':''">商品评价(18)</li>
+    </ul>
+    <div @click="on_tab_content('detail')" class="tab_content" :class="tab_content.detail?'current':''">
+        <dl>
+            <dt>商品详情：</dt>
+            <dd>{{ sku.spu.desc_detail|safe }}</dd>
+        </dl>
+    </div>
+    <div @click="on_tab_content('pack')" class="tab_content" :class="tab_content.pack?'current':''">
+        <dl>
+            <dt>规格与包装：</dt>
+            <dd>{{ sku.spu.desc_pack|safe }}</dd>
+        </dl>
+    </div>
+    <div @click="on_tab_content('service')" class="tab_content" :class="tab_content.service?'current':''">
+        <dl>
+            <dt>售后服务：</dt>
+            <dd>{{ sku.spu.desc_service|safe }}</dd>
+        </dl>
+    </div>
+    <div @click="on_tab_content('comment')" class="tab_content" :class="tab_content.comment?'current':''">
+        <ul class="judge_list_con">
+            {#...商品评价...#}
+        </ul>
+    </div>
+</div>
 	</div>
 
 	<div class="footer">
@@ -367,23 +360,12 @@
 	</div>
 	</div>
     <script type="text/javascript">
-        let category_id={{ category.id }}
+        let category_id = "{{ sku.category.id }}";
+        let sku_price = "{{ sku.price }}";
+        let sku_id = "{{ sku.id }}"
     </script>
-	<script type="text/javascript" src="{{ static('js/host.js') }}"></script>
+
 	<script type="text/javascript" src="{{ static('js/common.js') }}"></script>
-	<script type="text/javascript" src="{{ static('js/list.js') }}"></script>
-	<script type="text/javascript" src="{{ static('js/jquery.pagination.min.js') }}"></script>
-    <script type="text/javascript">
-        $(function () {
-            $('#pagination').pagination({
-                currentPage: {{ page_num }},
-                totalPage: {{ total_page }},
-                callback:function (current) {
-                    {#location.href = '/list/115/1/?sort=default';#}
-                    location.href = '/list/{{ category.id }}/' + current + '/?sort={{ sort }}';
-                }
-            })
-        });
-    </script>
+	<script type="text/javascript" src="{{ static('js/detail.js') }}"></script>
 </body>
 </html>

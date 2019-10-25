@@ -108,7 +108,7 @@ x               y    z          a
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class CartsView(View):
+class CartsView(LoginRequiredMixin, View):
 
     """
     1.功能分析
@@ -137,63 +137,69 @@ class CartsView(View):
     """
 
     def post(self, request):
+
         # 1.接收数据,判断商品信息
-        data = json.loads(request.body.decode())
+        data = json.loads(request.bady.decode())
         sku_id = data.get('sku_id')
         count = data.get('count')
         if not all([sku_id, count]):
-            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg': '参数不全' })
+            return http.JsonResponse({'code':RETCODE.PARAMERR,'errmsg':'参数不足'})
         try:
             sku = SKU.objects.get(id=sku_id)
         except SKU.DoesNotExist:
-            return http.JsonResponse({'code':RETCODE.NODATAERR, 'errmsg': '没有此商品'})
+            return http.JsonResponse({'code':RETCODE.NODATAERR, 'errmsg':'没有此商品'})
 
         try:
             count = int(count)
+
         except Exception:
-            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg': '参数错误'})
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'参数类型错误'})
 
         selected = True
-
         # 2.先获取用户信息
         user = request.user
         # 3.根据用户是否登陆来判断
         if user.is_authenticated:
+
             # 4.登陆用户操作数据(redis)
             #     4.1 连接数据库
             redis_conn = get_redis_connection('carts')
             #     4.2 操作数据库
-            redis_conn.hset('carts_%s' %user.id, sku_id, count)
+            redis_conn.hset('carts_%s' % user.id, sku_id,count)
             redis_conn.sadd('selecten_%s' % user.id, sku_id)
             #     4.3 返回相应
-            return http.JsonResponse({'code':RETCODE.OK, "errmsg":'OK'})
+            return http.JsonResponse({'code':RETCODE.OK,'errmsg':'ok'})
         else:
             # 5.未登录用户操作cookie
-            #     5.1 组织数据
-            carts_str = request.COOKIES.get('carts')
+            carts_str=request.COOKIES.get('carts')
             if carts_str is None:
-                cookie_data = {
-                    sku_id:{'count': count, 'selected': True}
+                cookie_data={
+                    sku_id:{'count':count, 'selected':True}
                 }
             else:
                 decode_data = base64.b64decode(carts_str)
-                #　在bytes转字典
+
                 cookie_data = pickle.loads(decode_data)
 
                 if sku_id in cookie_data:
                     origin_count = cookie_data[sku_id]['count']
-                    count+=origin_count
-                    cookie_data[sku_id] = {'count':count, 'selected':True}
-                else:
-                    cookie_data[sku_id] = {'count':count, 'selected':True}
-            #     5.2 对数据进行编码
-            #     字典转bytes
-            cookie_bytes = pickle.dumps(cookie_data)
-            #     base64编码
-            cookie_str = base64.b64encode(cookie_bytes)
-            #     5.3 设置cookie
-            response = http.JsonResponse({'code':RETCODE.OK, 'errmsg':'ok'})
 
+                    count += origin_count
+
+                    cookie_data[sku_id] = {'count':count, selected:True}
+
+                else:
+                    cookie_data[sku_id] = {'count':count, selected:True}
+                #     5.1 组织数据
+                #     5.2 对数据进行编码
+
+            cookie_bytes = pickle.dumps(cookie_data)
+
+            cookie_str = base64.b64encode(cookie_bytes)
+
+                #     5.3 设置cookie
+            response = http.JsonResponse({'code':RETCODE.OK,'errmsg':'ok'})
+                #     5.4 返回相应
             response.set_cookie('carts', cookie_str, max_age=3600)
-            #     5.4 返回相应
+
             return response
