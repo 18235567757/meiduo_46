@@ -326,3 +326,42 @@ class CartsView(LoginRequiredMixin, View):
             response.set_cookie('carts', cookie_data, max_age=3600)
 
             return response
+
+    def delete(self, request):
+        data = json.loads(request.body.decode())
+        sku_id = data.get('sku_id')
+
+        try:
+            sku = SKU.objects.get(id=sku_id)
+        except SKU.DoesNotExist:
+            return http.JsonResponse({'code':RETCODE.NODATAERR,'errmsg':'没有此数据'})
+
+        user = request.user
+        if user.is_authenticated:
+
+            redis_conn = get_redis_connection('carts')
+
+            redis_conn.hdel('carts_%s' % user.id, sku_id)
+
+            redis_conn.srem('selected_%s' % user.id, sku_id)
+
+            return http.JsonResponse({'code':RETCODE.OK, 'errmsg':'ok'})
+
+        else:
+            cookie_str = request.COOKIES.get('carts')
+            if cookie_str is None:
+                cookie_dict = pickle.loads(base64.b64decode(cookie_str))
+
+            else:
+                cookie_dict={}
+
+            if sku_id in cookie_dict:
+                del cookie_dict[sku_id]
+
+            cookie_data = base64.b64encode(pickle.dumps(cookie_dict))
+
+            response = http.JsonResponse({'code':RETCODE.OK,'errmsg':'ok'})
+
+            response.set_cookie('carts', cookie_data, max_age=3600)
+
+            return response
