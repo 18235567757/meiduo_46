@@ -161,9 +161,9 @@ class CartsView(View):
             #     4.1 连接数据库
             redis_conn = get_redis_connection('carts')
             #     4.2 操作数据库
-            redis_conn.hset('carts_%s' % user.id, count)
+            redis_conn.hset('carts_%s' % user.id, sku_id, count)
 
-            redis_conn.sadd('selecten_%s ' % user.id, sku_id)
+            redis_conn.sadd('selected_%s ' % user.id, sku_id)
             #     4.3 返回相应
 
             return http.JsonResponse({'code': RETCODE.OK, "errmsg": 'ok'})
@@ -252,7 +252,7 @@ class CartsView(View):
         data = json.loads(request.body.decode())
         sku_id = data.get('sku_id')
         count = data.get('count')
-        selected = data.get('selecten')
+        selected = data.get('selected')
 
         try:
             sku = SKU.objects.get(id=sku_id)
@@ -357,3 +357,6 @@ class CartsView(View):
             response.set_cookie('carts', cookie_data, max_age=3600)
 
             return response
+
+
+

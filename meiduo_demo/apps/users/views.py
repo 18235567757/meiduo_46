@@ -109,9 +109,13 @@ class LogView(View):
         else:
             request.session.set_expiry(None)
         # 405 没有实现对应的方法
+
         response = redirect(reverse('contens:index'))
 
         response.set_cookie('username', user.username, max_age=3600*24*14)
+
+        from apps.carts.utils import merge_cookie_to_redis
+        response = merge_cookie_to_redis(request, user, response)
 
         return response
 
