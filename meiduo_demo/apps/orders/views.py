@@ -171,3 +171,20 @@ class OrderCommitView(LoginRequiredMixin,View):
                 transaction.savepoint_commit(savepoint)
 
         return JsonResponse({'code':RETCODE.OK, 'errmsg':'ok'})
+
+
+class OrderSuccessView(View):
+
+    def get(self, request):
+
+        order_id = request.GET.get('order_id')
+        payment_amount = request.GET.get('payment_amount')
+        pay_method = request.GET.get('pay_method')
+
+        context = {
+            'order_id':order_id,
+            'payment_amount':payment_amount,
+            'pay_method':pay_method,
+        }
+
+        return render(request, 'order_success.html', context=context)
