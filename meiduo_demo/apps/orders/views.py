@@ -9,7 +9,7 @@ from django.views import View
 from django_redis import get_redis_connection
 
 from apps.goods.models import SKU
-from apps.orders.models import OrderInfo
+from apps.orders.models import OrderInfo, OrderGoods
 from apps.users.models import Address
 from utils.response_code import RETCODE
 
@@ -88,19 +88,86 @@ class OrderCommitView(LoginRequiredMixin,View):
         # 总数量0,　总金额0,　运费
         total_count = 0
         from decimal import Decimal
-        total_amout = Decimal('0')
+        total_amount = Decimal('0')
 
-        freeight = Decimal('10.00')
+        freight = Decimal('10.00')
 
         # 支付方式
-        if pay_method not in [OrderInfo.PAY_METHODS_ENUM['CASH'], OrderInfo.PAY_METHODS_ENUM['ALIPAY']]
+        if pay_method not in [OrderInfo.PAY_METHODS_ENUM['CASH'], OrderInfo.PAY_METHODS_ENUM['ALIPAY']]:
             return JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'支付方式错误'})
 
         if pay_method == OrderInfo.PAY_METHODS_ENUM['CASH']:
             status = OrderInfo.ORDER_STATUS_ENUM['UNSEND']
         else:
             status = OrderInfo.ORDER_STATUS_ENUM['UNPAID']
-        
 
-        #
-        #
+        from django.db import transaction
+
+        with transaction.atomic():
+
+            savepoint = transaction.savepoint()
+            try:
+                order_info = OrderInfo.objects.create(
+                    order_id=order_id,
+                    user=user,
+                    address=address,
+                    total_count=total_count,
+                    total_amount=total_amount,
+                    freight=freight,
+                    pay_method=pay_method,
+                    status=status
+                )
+                # 再写入订单商品信息
+                    # 获取redis中,指定用户的选中信息[1.2]
+                redis_conn = get_redis_connection('carts')
+                # 通过id获取到商品的购买数量
+                id_counts = redis_conn.hgetall('carts_%s' % user.id)
+                # 通过id获取到商品的选中状态
+                selected_ids = redis_conn.smembers('selected_%s' % user.id)
+
+                selected_dict = {}
+                # 选中商品的id
+                for id in selected_ids:
+                    selected_dict[int(id)] = int(id_counts[id])
+
+                for sku_id,count in selected_dict.items():
+                    sku = SKU.objects.get(id=sku_id)
+                    #说明库存不足
+                    if sku.stock < count:
+                        #回滚
+                        transaction.savepoint_rollback(savepoint)
+
+                        return JsonResponse({'code':RETCODE.STOCKERR,'errmsg':'库存不足'})
+                    import time
+                    time.sleep(7)
+
+                    # 乐观锁
+                    # 乐观所第一步，先记录库存
+                    old_stock = sku.stock
+
+                    # 乐观锁　第二步　计算更新后的数据
+                    new_stock = sku.stock-count
+
+                    new_sales = sku.sales=count
+
+                    #　更新前,再判断一次，相同则更新数据
+                    # 乐观锁第三步
+                    rect = SKU.objects.filter(id=sku_id, stock=old_stock).update(stock=new_stock, sales=new_sales)
+
+                    OrderGoods.objects.create(
+                        order=order_info,
+                        sku=sku,
+                        count=count,
+                        price=sku.price
+                    )
+
+                    order_info.total_count += count
+                    order_info.total_amount += (count*sku.price)
+
+                order_info.save()
+            except Exception as e:
+                transaction.savepoint_rollback(savepoint)
+            else:
+                transaction.savepoint_commit(savepoint)
+
+        return JsonResponse({'code':RETCODE.OK, 'errmsg':'ok'})
