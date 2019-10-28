@@ -138,8 +138,8 @@ class OrderCommitView(LoginRequiredMixin,View):
                         transaction.savepoint_rollback(savepoint)
 
                         return JsonResponse({'code':RETCODE.STOCKERR,'errmsg':'库存不足'})
-                    import time
-                    time.sleep(7)
+                    # import time
+                    # time.sleep(7)
 
                     # 乐观锁
                     # 乐观所第一步，先记录库存
@@ -164,13 +164,17 @@ class OrderCommitView(LoginRequiredMixin,View):
                     order_info.total_count += count
                     order_info.total_amount += (count*sku.price)
 
-                order_info.save()
+                    order_info.save()
             except Exception as e:
                 transaction.savepoint_rollback(savepoint)
             else:
                 transaction.savepoint_commit(savepoint)
 
-        return JsonResponse({'code':RETCODE.OK, 'errmsg':'ok'})
+        return JsonResponse({'code':RETCODE.OK, 'errmsg':'ok',
+                             'order_id':order_info.order_id,
+                             'payment_amount':order_info.total_amount,
+                             'pay_method':order_info.pay_method,
+                            })
 
 
 class OrderSuccessView(View):
