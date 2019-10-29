@@ -43,9 +43,15 @@ INSTALLED_APPS = [
     'apps.contens',
     'apps.goods',
     'apps.orders',
-
+    'django_crontab', # 定时任务
 
 ]
+
+CRONJOBS = [
+    # 每1分钟生成一次首页静态文件
+    ('*/1 * * * *', 'apps.contents.crons.generate_static_index_html', '>> ' + os.path.join(BASE_DIR, 'logs/crontab.log'))
+]
+CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

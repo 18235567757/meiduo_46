@@ -1,6 +1,8 @@
 from datetime import timezone
 
 from django import http
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.shortcuts import render
 
 # Create your views here.
@@ -150,8 +152,9 @@ class DetailView(View):
 
         return render(request, 'detail.html', context)
 
-class HotSKUView(View):
 
+class HotSKUView(View):
+        # 热销排行展示
     def get(self, request, category_id):
         try:
             category = GoodsCategory.objects.filter(id=category_id)
@@ -171,3 +174,7 @@ class HotSKUView(View):
             })
 
         return http.JsonResponse({'code':RETCODE.OK, 'errmsg':'ok', 'hot_skus':hot_skus})
+
+
+
+

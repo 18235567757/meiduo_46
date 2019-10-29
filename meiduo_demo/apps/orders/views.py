@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -192,3 +193,43 @@ class OrderSuccessView(View):
         }
 
         return render(request, 'order_success.html', context=context)
+
+
+class InfoView(LoginRequiredMixin, View):
+
+    def get(self, request, page_num):
+
+        order_list = request.user.orders.order_by('-create_time')
+
+        # 分页
+        paginator = Paginator(order_list, 5)
+        # 获取当前页数据
+        page = paginator.page(page_num)
+
+        order_list2 = []
+        for order in page:
+            detail_list = []
+            for detail in order.skus.all():
+                detail_list.append({
+                    'default_image_url': detail.sku.default_image.url,
+                    'name': detail.sku.name,
+                    'price': detail.price,
+                    'count': detail.count,
+                    'total_amount': detail.price * detail.count
+                })
+        order_list2.append({
+            'create_time': order.create_time,
+            'order_id': order.order_id,
+            'details': detail_list,
+            'total_amount': order.total_amount,
+            'freight': order.freight,
+            'status': order.status
+        })
+
+        context = {
+            'page': order_list2,
+            'page_num': page_num,
+            'total_page': paginator.num_pages
+        }
+        return render(request, 'user_center_order.html', context)
+

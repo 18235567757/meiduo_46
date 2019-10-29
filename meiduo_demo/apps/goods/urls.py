@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^detail/visit/(?P<category_id>\d+)/$',views.DetailVisitView.as_view(), name='visitcount'),
     url(r'^detail/(?P<sku_id>\d+)/$', views.DetailView.as_view(), name='detail'),
 
+
 ]
