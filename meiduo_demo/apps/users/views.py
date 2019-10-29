@@ -1,4 +1,6 @@
+import base64
 import json
+import pickle
 
 from django.contrib.auth import login, logout
 from django.http import HttpResponseBadRequest
@@ -256,7 +258,7 @@ class AddressView(LoginRequiredMixin, View):
 
         }
         # """提供收货地址界面"""
-        return render(request, 'user_center_site.html', context=context)
+        return render(request, 'user_center_site.html', context)
 
 
 class CreateAddressView(LoginRequiredMixin, View):
@@ -331,3 +333,42 @@ class CreateAddressView(LoginRequiredMixin, View):
         }
 
         return http.JsonResponse({'code':RETCODE.OK, 'errmsg':'新增地址成功','address':address_dict})
+
+
+class FindPasswordView(View):
+
+    def get(self, request):
+
+        return render(request, 'find_password.html', )
+
+
+class ChangePwdView(View):
+    def post(self, request, user_id):
+        data = json.loads(request.body.decode())
+
+        password = data.get('password')
+        password2 = data.get('password2')
+        data_token = data.get('access_token')
+        access_token = pickle.loads(base64.b64decode(data_token))
+
+        if password != password2:
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'两次输入的密码不一样'})
+
+        if access_token is None:
+            return http.JsonResponse({'code':RETCODE.NODATAERR, 'errmsg':'验证信息已失效'})
+
+        if int(user_id) != access_token['user_id']:
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'用户id错误'})
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'此用户不存在'})
+
+        user.set_password(password)
+        user.save()
+
+        return http.JsonResponse({'code':RETCODE.OK, 'errmsg':'ok'})
+
+
+

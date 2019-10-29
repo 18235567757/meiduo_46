@@ -54,5 +54,5 @@ def merge_cookie_to_redis(request, user, response):
 
             return response
 
-        else:
-            return response
+    else:
+        return response
