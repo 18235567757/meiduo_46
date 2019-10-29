@@ -1,36 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6a87fbc4-80a1-4672-a95b-568161b96c2a" name="Default" comment="QQ模板迁移">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/apps/contens/crons.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/script/generic_detail_html.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/1.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/10.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/11.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/12.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/13.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/14.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/15.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/16.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/2.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/3.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/4.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/5.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/6.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/7.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/8.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/static/detail/9.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/user_center_order.html" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/user_center_order.html" afterPath="" />
+    <list default="true" id="6a87fbc4-80a1-4672-a95b-568161b96c2a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/goods/urls.py" afterPath="$PROJECT_DIR$/apps/goods/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/goods/views.py" afterPath="$PROJECT_DIR$/apps/goods/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/orders/models.py" afterPath="$PROJECT_DIR$/apps/orders/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/orders/urls.py" afterPath="$PROJECT_DIR$/apps/orders/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/orders/views.py" afterPath="$PROJECT_DIR$/apps/orders/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/meiduo_demo/settings.py" afterPath="$PROJECT_DIR$/meiduo_demo/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/user_center_info.html" afterPath="$PROJECT_DIR$/templates/user_center_info.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/user_center_site.html" afterPath="$PROJECT_DIR$/templates/user_center_site.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/1.html" afterPath="$PROJECT_DIR$/static/detail/1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/10.html" afterPath="$PROJECT_DIR$/static/detail/10.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/11.html" afterPath="$PROJECT_DIR$/static/detail/11.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/12.html" afterPath="$PROJECT_DIR$/static/detail/12.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/13.html" afterPath="$PROJECT_DIR$/static/detail/13.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/14.html" afterPath="$PROJECT_DIR$/static/detail/14.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/15.html" afterPath="$PROJECT_DIR$/static/detail/15.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/16.html" afterPath="$PROJECT_DIR$/static/detail/16.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/2.html" afterPath="$PROJECT_DIR$/static/detail/2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/3.html" afterPath="$PROJECT_DIR$/static/detail/3.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/4.html" afterPath="$PROJECT_DIR$/static/detail/4.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/5.html" afterPath="$PROJECT_DIR$/static/detail/5.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/6.html" afterPath="$PROJECT_DIR$/static/detail/6.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/7.html" afterPath="$PROJECT_DIR$/static/detail/7.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/8.html" afterPath="$PROJECT_DIR$/static/detail/8.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/detail/9.html" afterPath="$PROJECT_DIR$/static/detail/9.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/user_center_order.html" afterPath="$PROJECT_DIR$/templates/user_center_order.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -96,8 +85,8 @@
       <file leaf-file-name="generic_detail_html.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/script/generic_detail_html.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="88">
-              <caret line="40" column="24" lean-forward="true" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
+            <state relative-caret-position="0">
+              <caret line="36" column="26" lean-forward="true" selection-start-line="36" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -688,7 +677,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572005460466</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="首页与商品详情页静态化">
+      <created>1572339964441</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1572339964441</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -697,10 +693,10 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
-    <editor active="false" />
+    <frame x="65" y="24" width="1855" height="1056" extended-state="7" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17252931" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17252931" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28884026" sideWeight="0.5019542" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32998326" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -750,7 +746,8 @@
     <MESSAGE value="QQ模板迁移" />
     <MESSAGE value="购物车后端逻辑实现" />
     <MESSAGE value="浏览记录BUG的解决" />
-    <option name="LAST_COMMIT_MESSAGE" value="浏览记录BUG的解决" />
+    <MESSAGE value="首页与商品详情页静态化" />
+    <option name="LAST_COMMIT_MESSAGE" value="首页与商品详情页静态化" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1191,8 +1188,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script/generic_detail_html.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="40" column="24" lean-forward="true" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
+        <state relative-caret-position="0">
+          <caret line="36" column="26" lean-forward="true" selection-start-line="36" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
           <folding />
         </state>
       </provider>
