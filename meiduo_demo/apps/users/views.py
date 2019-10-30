@@ -53,9 +53,9 @@ class RegisterView(View):
             return http.HttpResponseBadRequest('请勾选用户协议')
 
         user = User.objects.create_user(username=username,
-                                 password=password,
-                                 mobile=mobile,
-                                 )
+                                        password=password,
+                                        mobile=mobile,
+                                        )
 
         login(request, user)
         return redirect(reverse('contens:index'))

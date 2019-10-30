@@ -298,5 +298,24 @@ class CommentSKUView(LoginRequiredMixin, View):
 
     def get(self, request, sku_id):
 
-        pass
+        # 查询指定sku_id的所有评论信息
+        comments = OrderGoods.objects.filter(sku_id=sku_id, is_commented=True)
+        comment_list = []
+        # detail表示OrderGoods对象
+        for detail in comments:
+            username = detail.order.user.username
+            if detail.is_anonymous:
+                username = '******'
+            comment_list.append({
+                'username': username,
+                'comment': detail.comment,
+                'score': detail.score
+            })
+
+        return http.JsonResponse({
+            'code': RETCODE.OK,
+            'errmsg': "OK",
+            'goods_comment_list': comment_list
+        })
+
 
