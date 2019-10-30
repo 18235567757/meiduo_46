@@ -1,17 +1,18 @@
+
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.http import JsonResponse
-from django.shortcuts import render
 
+from django.shortcuts import render
+from django import http
 # Create your views here.
 from django.views import View
 from django_redis import get_redis_connection
 
 from apps.goods.models import SKU
 from apps.orders.models import OrderInfo, OrderGoods
-from apps.users.models import Address
+from apps.users.models import Address, User
 from utils.response_code import RETCODE
 
 
@@ -43,13 +44,13 @@ class PlaceOrderView(LoginRequiredMixin, View):
 
         for id in ids:
             sku = SKU.objects.get(id=id)
-            sku.count = selected_dict[id]# 数量
-            sku.amount = (sku.price*sku.count)# 小计
+            sku.count = selected_dict[id] # 数量
+            sku.amount = (sku.price*sku.count) # 小计
             skus.append(sku)
             # 累加计算
             total_count += sku.count
             total_amount += sku.amount
-        #　运费
+        # 运费
         freight = 10
 
         context = {
@@ -65,7 +66,7 @@ class PlaceOrderView(LoginRequiredMixin, View):
         return render(request, 'place_order.html', context=context)
 
 
-class OrderCommitView(LoginRequiredMixin,View):
+class OrderCommitView(LoginRequiredMixin, View):
 
     def post(self,request):
         # 接收数据
@@ -74,14 +75,14 @@ class OrderCommitView(LoginRequiredMixin,View):
         pay_method = data.get('pay_method')
         # 验证数据
         if not all([address_id, pay_method]):
-            return JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'参数不齐全'})
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg': '参数不齐全'})
         # 数据入库
         user = request.user
 
         try:
-            address = Address.objects.get(id=address_id,user=user)
+            address = Address.objects.get(id=address_id, user=user)
         except Address.DoesNotExist:
-            return JsonResponse({'code':RETCODE.PARAMERR,'errmsg':'地址不正确'})
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg': '地址不正确'})
             # 拼接订单编号
         from django.utils import timezone
 
@@ -95,7 +96,7 @@ class OrderCommitView(LoginRequiredMixin,View):
 
         # 支付方式
         if pay_method not in [OrderInfo.PAY_METHODS_ENUM['CASH'], OrderInfo.PAY_METHODS_ENUM['ALIPAY']]:
-            return JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'支付方式错误'})
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg': '支付方式错误'})
 
         if pay_method == OrderInfo.PAY_METHODS_ENUM['CASH']:
             status = OrderInfo.ORDER_STATUS_ENUM['UNSEND']
@@ -119,7 +120,7 @@ class OrderCommitView(LoginRequiredMixin,View):
                     status=status
                 )
                 # 再写入订单商品信息
-                    # 获取redis中,指定用户的选中信息[1.2]
+                # 获取redis中,指定用户的选中信息[1.2]
                 redis_conn = get_redis_connection('carts')
                 # 通过id获取到商品的购买数量
                 id_counts = redis_conn.hgetall('carts_%s' % user.id)
@@ -133,12 +134,12 @@ class OrderCommitView(LoginRequiredMixin,View):
 
                 for sku_id,count in selected_dict.items():
                     sku = SKU.objects.get(id=sku_id)
-                    #说明库存不足
+                    # 说明库存不足
                     if sku.stock < count:
-                        #回滚
+                        # 回滚
                         transaction.savepoint_rollback(savepoint)
 
-                        return JsonResponse({'code':RETCODE.STOCKERR,'errmsg':'库存不足'})
+                        return http.JsonResponse({'code': RETCODE.STOCKERR, 'errmsg': '库存不足'})
                     # import time
                     # time.sleep(7)
 
@@ -151,7 +152,7 @@ class OrderCommitView(LoginRequiredMixin,View):
 
                     new_sales = sku.sales=count
 
-                    #　更新前,再判断一次，相同则更新数据
+                    # 更新前,再判断一次，相同则更新数据
                     # 乐观锁第三步
                     rect = SKU.objects.filter(id=sku_id, stock=old_stock).update(stock=new_stock, sales=new_sales)
 
@@ -171,10 +172,10 @@ class OrderCommitView(LoginRequiredMixin,View):
             else:
                 transaction.savepoint_commit(savepoint)
 
-        return JsonResponse({'code':RETCODE.OK, 'errmsg':'ok',
-                             'order_id':order_info.order_id,
-                             'payment_amount':order_info.total_amount,
-                             'pay_method':order_info.pay_method,
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok',
+                                 'order_id': order_info.order_id,
+                                  'payment_amount': order_info.total_amount,
+                                  'pay_method': order_info.pay_method,
                             })
 
 
@@ -187,9 +188,9 @@ class OrderSuccessView(View):
         pay_method = request.GET.get('pay_method')
 
         context = {
-            'order_id':order_id,
-            'payment_amount':payment_amount,
-            'pay_method':pay_method,
+            'order_id': order_id,
+            'payment_amount': payment_amount,
+            'pay_method': pay_method,
         }
 
         return render(request, 'order_success.html', context=context)
@@ -198,33 +199,33 @@ class OrderSuccessView(View):
 class InfoView(LoginRequiredMixin, View):
 
     def get(self, request, page_num):
-        #　获取到用户的订单数据,并且进行倒序排序
+        # 获取到用户的订单数据,并且进行倒序排序
         order_list = request.user.orders.order_by('-create_time')
         # 创建分页器,每页５条记录
         paginator = Paginator(order_list, 5)
-        #　获取当前页的数据
+        # 获取当前页的数据
         page = paginator.page(page_num)
 
-        #　通过for循环拿到当前页数据的详细信息
+        # 通过for循环拿到当前页数据的详细信息
         order_list2=[]
         for order in page:
             detail_list = []
             for detail in order.skus.all():
                 detail_list.append({
                     'default_image_url': detail.sku.default_image.url,
-                    'name':detail.sku.name,
-                    'price':detail.price,
-                    'count':detail.count,
-                    'total_amount':detail.price * detail.count,
+                    'name': detail.sku.name,
+                    'price': detail.price,
+                    'count': detail.count,
+                    'total_amount': detail.price * detail.count,
                 })
 
             order_list2.append({
-                'order_id':order.order_id,
-                'create_time':order.create_time,
-                'details':detail_list,
-                'total_amount':order.total_amount,
-                'freight':order.freight,
-                'status':order.status,
+                'order_id': order.order_id,
+                'create_time': order.create_time,
+                'details': detail_list,
+                'total_amount': order.total_amount,
+                'freight': order.freight,
+                'status': order.status,
 
             })
         context = {
@@ -236,5 +237,66 @@ class InfoView(LoginRequiredMixin, View):
         return render(request, 'user_center_order.html', context)
 
 
+class CommentView(LoginRequiredMixin, View):
 
+    def get(self, request):
+        # 获取用户订单id信息
+        order_id = request.GET.get('order_id')
+        # 查询订单商品列表
+        try:
+            order = OrderInfo.objects.get(pk=order_id, user_id=request.user.id)
+
+        except OrderInfo.DoesNotExist:
+            return http.HttpResponseBadRequest('此商品不存在')
+        # 获取订单的所有商品
+        skus = []
+        for detail in order.skus.filter(is_commented=False):
+            skus.append({
+                'sku_id': detail.sku_id,
+                'name': detail.sku.name,
+                'price': str(detail.price),
+                'order_id': order_id,
+                'default_image_url': detail.sku.default_image.url,
+            })
+
+        context = {
+            'skus': skus
+
+        }
+
+        return render(request, 'goods_judge.html', context)
+
+    def post(self, request):
+
+        data = json.loads(request.body.decode())
+
+        comment = data.get('comment')
+        order_id = data.get('order_id')
+        score = data.get('score')
+        sku_id = data.get('sku_id')
+        is_anonymous = data.get('is_anonymous')
+        # 判断数据是否齐全
+        if not all([comment, order_id, score, sku_id]):
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'参数不完整'})
+        # 判断is_anonymous值的类型是否为bool类型
+        if not isinstance(is_anonymous, bool):
+            return http.JsonResponse({'code':RETCODE.PARAMERR, 'errmsg':'is_anonymous参数类型错误'})
+        # 创建实例对象
+        order_goods = OrderGoods.objects.get(sku=sku_id, order_id=order_id)
+        # 添加修改数据
+        order_goods.comment = comment
+        order_goods.score = int(score)
+        order_goods.is_anonymous = is_anonymous
+        order_goods.is_commented = True
+        # 提交保存
+        order_goods.save()
+
+        return http.JsonResponse({'code':RETCODE.OK, 'errmsg':'ok'})
+
+
+class CommentSKUView(LoginRequiredMixin, View):
+
+    def get(self, request, sku_id):
+
+        pass
 

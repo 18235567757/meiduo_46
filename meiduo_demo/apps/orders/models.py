@@ -3,6 +3,8 @@ from apps.goods.models import SKU
 from apps.users.models import User, Address
 from utils.models import BaseModel
 
+# Create your models here.
+
 
 class OrderInfo(BaseModel):
     """订单信息"""
@@ -75,6 +77,4 @@ class OrderGoods(BaseModel):
         return self.sku.name
 
 
-from django.db import models
 
-# Create your models here.
