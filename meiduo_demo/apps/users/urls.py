@@ -14,7 +14,8 @@ urlpatterns = [
     url(r'^addresses/$', views.AddressView.as_view(), name='address'),
     url(r'^addresses/create/$', views.CreateAddressView.as_view(), name='creates'),
     url(r'^accounts/$', views.FindPasswordView.as_view(), name='password'),
-    url(r'^users/(?P<user_id>\d+)/password/$', views.ChangePwdView.as_view()),
+    url(r'^users/(?P<user_id>\d+)/password/$', views.ChangePwdView.as_view(),),
+    url(r'^change/$', views.ChangesPasswordView.as_view(), name='changes')
 
 ]
 

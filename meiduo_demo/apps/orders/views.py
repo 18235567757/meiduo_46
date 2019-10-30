@@ -198,38 +198,43 @@ class OrderSuccessView(View):
 class InfoView(LoginRequiredMixin, View):
 
     def get(self, request, page_num):
-
+        #　获取到用户的订单数据,并且进行倒序排序
         order_list = request.user.orders.order_by('-create_time')
-
-        # 分页
+        # 创建分页器,每页５条记录
         paginator = Paginator(order_list, 5)
-        # 获取当前页数据
+        #　获取当前页的数据
         page = paginator.page(page_num)
 
-        order_list2 = []
+        #　通过for循环拿到当前页数据的详细信息
+        order_list2=[]
         for order in page:
             detail_list = []
             for detail in order.skus.all():
                 detail_list.append({
                     'default_image_url': detail.sku.default_image.url,
-                    'name': detail.sku.name,
-                    'price': detail.price,
-                    'count': detail.count,
-                    'total_amount': detail.price * detail.count
+                    'name':detail.sku.name,
+                    'price':detail.price,
+                    'count':detail.count,
+                    'total_amount':detail.price * detail.count,
                 })
-        order_list2.append({
-            'create_time': order.create_time,
-            'order_id': order.order_id,
-            'details': detail_list,
-            'total_amount': order.total_amount,
-            'freight': order.freight,
-            'status': order.status
-        })
 
+            order_list2.append({
+                'order_id':order.order_id,
+                'create_time':order.create_time,
+                'details':detail_list,
+                'total_amount':order.total_amount,
+                'freight':order.freight,
+                'status':order.status,
+
+            })
         context = {
-            'page': order_list2,
-            'page_num': page_num,
-            'total_page': paginator.num_pages
+            'page':order_list2,
+            'page_num':page_num,
+            'total_page':paginator.num_pages
         }
+
         return render(request, 'user_center_order.html', context)
+
+
+
 
