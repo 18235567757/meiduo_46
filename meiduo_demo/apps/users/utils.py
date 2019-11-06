@@ -46,7 +46,7 @@ class UsernameMobileAuthBackend(ModelBackend):
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from meiduo_demo import settings
 from itsdangerous import BadData
-#'http://www.meiduo.site:8000/emailsactive/?token=%s'%token
+# 'http://www.meiduo.site:8000/emailsactive/?token=%s'%token
 
 
 def generic_active_email_url(id,email):

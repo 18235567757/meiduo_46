@@ -33,7 +33,7 @@ def test(request):
     return HttpResponse('test')
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admins/', admin.site.urls),
     url(r'^test/$', test),
     url(r'^', include('apps.users.urls', namespace='users')),
     url(r'^', include('apps.contens.urls', namespace='contens')),
@@ -43,5 +43,6 @@ urlpatterns = [
     url(r'^', include('apps.goods.urls',namespace='goods')),
     url(r'^', include('apps.carts.urls',namespace='carts')),
     url(r'^',include('apps.orders.urls',namespace='orders')),
+    url(r'^meiduo_admin/', include('apps.admins.urls', namespace='admins')),
 ]
 
