@@ -26,7 +26,7 @@ def get_user_by_usernamemobile(username):
 class UsernameMobileAuthBackend(ModelBackend):
 
     # def authenticate(self, request, username=None, password=None, **kwargs):
-    def authenticate(self, request, username=None, password=None, user=None, **kwargs):
+    def authenticate(self, request, username=None, password=None, **kwargs):
         # 1.区分用户名和手机号
         # try:
         #     if re.match(r'^1[3-9]\d{9}$', username):
@@ -38,10 +38,43 @@ class UsernameMobileAuthBackend(ModelBackend):
         # except Exception as e:
         #     logger.error(e)
         # else:
-        user = get_user_by_usernamemobile(username)
+        # user = get_user_by_usernamemobile(username)
+        #
+        # if user is not None and user.check_password(password):
+        #     return user
+        if request is None:
+            # 后台登录
+            try:
+                if re.match(r'1[3-9]\d{9}', username):
+                    # 手机号登陆
+                    user = User.objects.get(mobile=username, is_staff=True)
+                else:
+                    # 用户名登陆
+                    user = User.objects.get(username=username, is_staff=True)
+            except:
+                user = None
+            if user is not None and user.check_password(password):
+                return user
+        else:
+            # 前台登录
 
-        if user is not None and user.check_password(password):
-            return user
+            # 1. 区分 手机号 和 用户名
+            # try:
+            #     if re.match(r'1[3-9]\d{9}',username):
+            #         # 手机号登陆
+            #         user = User.objects.get(mobile=username)
+            #     else:
+            #         # 用户名登陆
+            #         user=User.objects.get(username=username)
+            # except Exception as e:
+            #     logger.error(e)
+            #     return None
+            # else:
+            # 1.就要一个用户名
+            user = get_user_by_usernamemobile(username)
+            # 2.检查密码
+            if user is not None and user.check_password(password):
+                return user
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from meiduo_demo import settings

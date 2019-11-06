@@ -64,7 +64,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -277,7 +277,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:8080',
     'http://www.meiduo.site:8080',
     'http://www.meiduo.site:800',
-    'http://api.meiduo.site:8000'
+    'http://api.meiduo.site:8000',
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
 
@@ -288,12 +288,19 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    # 权限配置
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    ),
 }
+
+
 
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
 
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'apps.admins.utils.jwt_response_payload_handler',
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    'apps.admins.utils.jwt_response_payload_handler',
 
 }
 

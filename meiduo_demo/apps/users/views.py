@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.users.models import User, Address
 from django.http import HttpResponse
 # from django.shortcuts import render,redirect
-from django.contrib.auth import authenticate
+from .utils import authenticate
 # Create your views here.
 from django.shortcuts import redirect, render
 
@@ -115,6 +115,7 @@ class ChangesPasswordView(LoginRequiredMixin, View):
 
         return response
 
+
 # 用户登录
 class LogView(View):
 
@@ -137,7 +138,7 @@ class LogView(View):
             return http.HttpResponseBadRequest('你的密码输入不合法')
 
         # user = authenticate(username=username, password=password)
-        user = authenticate(username=username, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is None:
             return http.HttpResponseBadRequest('请输入正确的用户名或密码')
         login(request, user)
