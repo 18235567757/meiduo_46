@@ -34,3 +34,11 @@ class UserSerializers(serializers.ModelSerializer):
 
         return attrs
 
+    def create(self, validated_data):
+        # 调用父类保存方法
+        user = super().create(validated_data)
+
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user

@@ -12,7 +12,7 @@ from apps.goods.models import GoodsVisitCount
 class UserTotalCountView(APIView):
     def get(self, request):
 
-        count = User.objects.filter(is_staff=False)
+        count = User.objects.filter(is_staff=False).count()
 
         return Response({
             'count': count
@@ -49,7 +49,7 @@ class UserDayActiveCountView(APIView):
 
         today = date.today()
 
-        count = User.objects.filter(is_staff=False, last_login__day=today).count()
+        count = User.objects.filter(is_staff=False, last_login__gte=today).count()
 
         return Response({
             'count': count

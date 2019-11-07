@@ -1,7 +1,9 @@
 from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
-from apps.admins.views import static
-from apps.admins.views import users
+
+from apps.admins.views import spce,static, users, options
+
+from rest_framework.routers import DefaultRouter
 urlpatterns = [
     # 后台登陆
     url(r'^authorizations/', obtain_jwt_token),
@@ -19,4 +21,13 @@ urlpatterns = [
     url(r'statistical/goods_day_views/$', static.GoodsCountView.as_view()),
     # 用户管理
     url(r'^users/$', users.UserView.as_view()),
+    # 获取spu商品信息
+    url(r'^goods/simple/$', spce.SpecView.as_view(({'get': 'simple'}))),
+
+    url(r'^goods/specs/simple/$', options.OptionView.as_view(({'get': 'simple'})))
 ]
+
+router = DefaultRouter()
+router.register('goods/specs', spce.SpecView, base_name='specs')
+router.register('specs/options', options.OptionView, base_name='options')
+urlpatterns += router.urls
