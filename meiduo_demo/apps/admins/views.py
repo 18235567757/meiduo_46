@@ -1,9 +1,12 @@
 from django.shortcuts import render
+from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from apps.users.models import User
 # Create your views here.
 from datetime import date, timedelta
+from apps.admins.seriailizer.statistical import GoodsCountSerializers
+from apps.goods.models import GoodsVisitCount
 
 
 class UserTotalCountView(APIView):
@@ -101,3 +104,11 @@ class UserMonthCountView(APIView):
                 'date': index_date,
             })
             return Response(date_list)
+
+
+class GoodsCountView(ListAPIView):
+
+    serializer_class = GoodsCountSerializers
+
+    queryset = GoodsVisitCount.objects.filter(date=date.today())
+

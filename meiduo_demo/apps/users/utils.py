@@ -25,56 +25,40 @@ def get_user_by_usernamemobile(username):
 
 class UsernameMobileAuthBackend(ModelBackend):
 
-    # def authenticate(self, request, username=None, password=None, **kwargs):
     def authenticate(self, request, username=None, password=None, **kwargs):
-        # 1.区分用户名和手机号
-        # try:
-        #     if re.match(r'^1[3-9]\d{9}$', username):
-        #         # 手机号登录
-        #         user = User.objects.get(mobile=username)
-        #     else:
-        #         # 用户名登录
-        #         user = User.objects.get(username=username)
-        # except Exception as e:
-        #     logger.error(e)
-        # else:
-        # user = get_user_by_usernamemobile(username)
-        #
-        # if user is not None and user.check_password(password):
-        #     return user
         if request is None:
             # 后台登录
-            try:
-                if re.match(r'1[3-9]\d{9}', username):
-                    # 手机号登陆
-                    user = User.objects.get(mobile=username, is_staff=True)
-                else:
-                    # 用户名登陆
-                    user = User.objects.get(username=username, is_staff=True)
-            except:
-                user = None
-            if user is not None and user.check_password(password):
+            user = self.check_admin_user(username)
+            if user and user.check_password(password):
                 return user
-        else:
-            # 前台登录
 
-            # 1. 区分 手机号 和 用户名
-            # try:
-            #     if re.match(r'1[3-9]\d{9}',username):
-            #         # 手机号登陆
-            #         user = User.objects.get(mobile=username)
-            #     else:
-            #         # 用户名登陆
-            #         user=User.objects.get(username=username)
-            # except Exception as e:
-            #     logger.error(e)
-            #     return None
-            # else:
-            # 1.就要一个用户名
-            user = get_user_by_usernamemobile(username)
-            # 2.检查密码
-            if user is not None and user.check_password(password):
+        else:
+            try:
+                if re.match(r'^1[3-9]\d{9}$', username):
+                    user = User.objects.get(mobile=username)
+                else:
+                    user = User.objects.get(username=username)
+                    # user = User.objects.get(username=username)
+            except:
+                # 如果未查到数据，则返回None，用于后续判断
+                try:
+                    user = User.objects.get(mobile=username)
+                except:
+                    return None
+            if user.check_password(password):
                 return user
+            else:
+                return None
+
+    def check_admin_user(self, username):
+        try:
+            if re.match(r'^1[3-9]\d{9}$', username):
+                user = User.objects.get(mobile=username, is_staff=True)
+            else:
+                user = User.objects.get(username=username, is_staff=True)
+        except Exception as e:
+            user = None
+        return user
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from meiduo_demo import settings
