@@ -5,6 +5,7 @@ from apps.goods.models import SKUImage, SKU
 from fdfs_client.client import Fdfs_client
 from celery_tasks.static.statics import get_detail_html
 
+
 class SKUImageSerializer(serializers.ModelSerializer):
     # 关联返回
 
@@ -63,7 +64,6 @@ class SKUSerializer(serializers.ModelSerializer):
     # 关联返回
 
     class Meta:
-
         model = SKU
 
         fields = '__all__'

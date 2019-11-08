@@ -1,12 +1,11 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from apps.admins.seriailizer.spce import SPUSpceSerializer,SPUSerializer
+from apps.admins.seriailizer.spce import SPUSpceSerializer, SPUSerializer
 from apps.admins.utils import pagenum
-from apps.goods.models import SPUSpecification,SPU
+from apps.goods.models import SPUSpecification, SPU
 
 
 class SpecView(ModelViewSet):
-
     # 指定序列化器
     serializer_class = SPUSpceSerializer
     # 指定查询结果集
