@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from rest_framework.response import Response
+
 from apps.goods.models import SKUImage, SKU
 from fdfs_client.client import Fdfs_client
-
+from celery_tasks.static.statics import get_detail_html
 
 class SKUImageSerializer(serializers.ModelSerializer):
     # 关联返回
@@ -29,6 +31,8 @@ class SKUImageSerializer(serializers.ModelSerializer):
         # 保存图片表
         img = SKUImage.objects.create(sku=sku, image=path)
 
+        get_detail_html.delay(img.sku.id)
+        # 返回结果
         return img
 
     def update(self, instance, validated_data):
@@ -49,8 +53,11 @@ class SKUImageSerializer(serializers.ModelSerializer):
 
         instance.image = path
         instance.save()
+        get_detail_html.delay(instance.sku.id)
+        # 返回结果
 
         return instance
+
 
 class SKUSerializer(serializers.ModelSerializer):
     # 关联返回

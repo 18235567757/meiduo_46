@@ -19,4 +19,4 @@ class FastDFSStorage(Storage):
 
     def url(self, name):
 
-        return "http://192.168.131.134:8888/" + name
+        return "http://192.168.131.137:8888/" + name
