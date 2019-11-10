@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from apps.goods.models import SKU, GoodsCategory, SpecificationOption, SPUSpecification, SKUSpecification
@@ -40,27 +41,40 @@ class SKUserializer(serializers.ModelSerializer):
         specs = validated_data['specs']
         # 将specs数据从validated_data中删除
         del validated_data['specs']
-        # 将数据添加到sku表中
-        sku = super().create(validated_data)
-        # 保存sku具体规格表数据
-        for spec in specs:
-            SKUSpecification.objects.create(sku=sku, spec_id=spec['spec_id'], option_id=spec['option_id'])
-        # 返回数据
-        return sku
+        with transaction.atomic():
+            ser = transaction.savepoint()
+            try:
+                # 将数据添加到sku表中
+                sku = super().create(validated_data)
+                # 保存sku具体规格表数据
+                for spec in specs:
+                    SKUSpecification.objects.create(sku=sku, spec_id=spec['spec_id'], option_id=spec['option_id'])
+            except:
+                transaction.savepoint_rollback(ser)
+                raise serializers.ValidationError('保存失败')
+                # 返回数据
+                return sku
 
     def update(self, instance, validated_data):
 
         # 获取specs数据
         specs = validated_data['specs']
         # 将specs数据从validated_data中删除
-        del validated_data['specs']
-        # 将数据添加到sku表中
-        sku = super().update(instance, validated_data)
-        # 保存sku具体规格表数据
-        for spec in specs:
-            SKUSpecification.objects.create(sku=sku, spec_id=spec['spec_id'], option_id=spec['option_id'])
-        # 返回数据
-        return sku
+        with transaction.atomic():
+            sid = transaction.savepoint()
+            try:
+                del validated_data['specs']
+                # 将数据添加到sku表中
+                sku = super().update(instance, validated_data)
+                # 修改sku具体规格表数据
+                for spec in specs:
+                    SKUSpecification.objects.update(sku=sku, spec_id=spec['spec_id']).update(option_id=spec['option_id'])
+            except:
+                transaction.savepoint_rollback(sid)
+                raise serializers.ValidationError('修改失败')
+                # 返回数据
+            else:
+                return sku
 
 
 class GoodsCategorySerializer(serializers.ModelSerializer):

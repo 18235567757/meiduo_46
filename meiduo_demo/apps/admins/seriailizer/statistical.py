@@ -6,6 +6,6 @@ class GoodsCountSerializers(serializers.ModelSerializer):
 
     category = serializers.StringRelatedField(read_only=True)
 
-    class Mate:
+    class Meta:
         model = GoodsVisitCount
         fields = ('category', 'count')

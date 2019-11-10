@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
 
-from apps.admins.views import spce, static, users, options, images, orders, sku
+from apps.admins.views import spce, static, users, options, images, orders, sku, spus
 
 from rest_framework.routers import DefaultRouter
 urlpatterns = [
@@ -34,14 +34,16 @@ urlpatterns = [
 ]
 
 router = DefaultRouter()
-#
+# 规格表路由
 router.register('goods/specs', spce.SpecView, base_name='specs')
-#
+# 规格选项表路由
 router.register('specs/options', options.OptionView, base_name='options')
 # 图片展示路由
 router.register('skus/images', images.SKUImageView, base_name='images')
 # 订单路由
 router.register('orders', orders.OrderInfoView, base_name='orders')
 # 商品sku路由
-router.register('skus', sku.SKUView, basename='skus')
+router.register('skus', sku.SKUView, base_name='skus')
+# 商品SPU路由
+router.register('goods', spus.SPUView, base_name='goods')
 urlpatterns += router.urls
