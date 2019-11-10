@@ -57,5 +57,5 @@ class SPUView(ModelViewSet):
         path = ret.get('Remote file_id')
         # 返回结果
         return Response({
-            'img_url': 'http://192.168.131.137:8888/' + path
+            'img_url': 'http://192.168.131.138:8888/' + path
         })

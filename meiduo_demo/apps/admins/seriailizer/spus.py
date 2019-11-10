@@ -16,6 +16,9 @@ class SPUSerializer(serializers.ModelSerializer):
     brand = serializers.StringRelatedField(read_only=True)
     brand_id = serializers.IntegerField()
     # 商品级别
+    category1 = serializers.StringRelatedField(read_only=True)
+    category2 = serializers.StringRelatedField(read_only=True)
+    category3 = serializers.StringRelatedField(read_only=True)
     category1_id = serializers.IntegerField()
     category2_id = serializers.IntegerField()
     category3_id = serializers.IntegerField()

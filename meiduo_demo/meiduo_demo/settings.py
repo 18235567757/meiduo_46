@@ -71,7 +71,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'meiduo_demo.urls'
-
+#
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.jinja2.Jinja2',
@@ -91,7 +91,21 @@ TEMPLATES = [
         },
     },
 ]
-
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 此处修改
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'django.template.context_processors.debug',
+#                 'django.template.context_processors.request',
+#                 'django.contrib.auth.context_processors.auth',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
 WSGI_APPLICATION = 'meiduo_demo.wsgi.application'
 
 

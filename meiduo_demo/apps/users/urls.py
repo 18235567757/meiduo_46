@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from rest_framework.routers import DefaultRouter
+
 
 from . import views
 
@@ -13,16 +13,13 @@ urlpatterns = [
     url(r'^center/$', views.UserCenterInfo.as_view(), name='center'),
     url(r'^emails/$', views.EmailView.as_view(), name='email'),
     url(r'^emailsactive/$', views.EmailActiveView.as_view(), name='emailsactive'),
-    # url(r'^addresses/$', views.AddressView.as_view(), name='address'),
-    # url(r'^addresses/create/$', views.CreateAddressView.as_view(), name='creates'),
+    url(r'^addresses/$', views.AddressView.as_view(), name='address'),
+    url(r'^addresses/create/$', views.CreateAddressView.as_view(), name='creates'),
     url(r'^accounts/$', views.FindPasswordView.as_view(), name='password'),
     url(r'^users/(?P<user_id>\d+)/password/$', views.ChangePwdView.as_view(),),
     url(r'^change/$', views.ChangesPasswordView.as_view(), name='changes')
 
 ]
 
-router = DefaultRouter()
-# 地址路由
-router.register('addresses', views.AddressView, base_name='addresses')
-urlpatterns += router.urls
+
 
