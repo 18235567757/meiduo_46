@@ -4,6 +4,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from apps.admins.views import spce, static, users, options, images, orders, sku, spus
 
 from rest_framework.routers import DefaultRouter
+
 urlpatterns = [
     # 后台登陆
     url(r'^authorizations/', obtain_jwt_token),
@@ -30,7 +31,16 @@ urlpatterns = [
     # 获取三级类别
     url(r'^skus/categories/$', sku.SKUView.as_view(({'get': 'simple'}))),
     # 获取sku规格数据
-    url(r'goods/(?P<pk>\d+)/specs/$', sku.SKUView.as_view(({'get': 'specs'})))
+    url(r'^goods/(?P<pk>\d+)/specs/$', sku.SKUView.as_view(({'get': 'specs'}))),
+    # 获取品牌信息
+    url(r'^goods/brands/simple/$', spus.SPUView.as_view(({'get': 'brand'}))),
+    # 获取一级分类
+    url(r'^goods/channel/categories/$', spus.SPUView.as_view(({'get': 'channel'}))),
+    # 获取二级分类
+    url(r'^goods/channel/categories/(?P<pk>\d+)/$', spus.SPUView.as_view(({'get': 'channel2'}))),
+    # 上传图片
+    url(r'^goods/images/$', spus.SPUView.as_view((({'post': 'images'})))),
+
 ]
 
 router = DefaultRouter()
