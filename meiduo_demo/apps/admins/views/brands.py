@@ -12,5 +12,5 @@ class BrandView(ModelViewSet):
 
     pagination_class = pagenum
 
-    def categories(self, request):
-        return
+    # def categories(self, request):
+    #     return

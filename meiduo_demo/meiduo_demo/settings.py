@@ -304,6 +304,7 @@ REST_FRAMEWORK = {
     ),
     # 权限配置
     'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoModelPermissions',
         'rest_framework.permissions.IsAdminUser',
     ),
 }

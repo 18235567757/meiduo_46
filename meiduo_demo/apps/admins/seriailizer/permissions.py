@@ -16,6 +16,7 @@ class ContentTypeSerializer(serializers.ModelSerializer):
     """
     获取权限类型
     """
+    name = serializers.CharField()
 
     class Meta:
         model = ContentType
