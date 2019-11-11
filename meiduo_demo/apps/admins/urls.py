@@ -1,7 +1,6 @@
 from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
-
-from apps.admins.views import spce, static, users, options, images, orders, sku, spus, brands, permissions
+from apps.admins.views import spce, static, users, options, images, orders, sku, spus, brands, groups,permissions
 
 from rest_framework.routers import DefaultRouter
 
@@ -44,6 +43,8 @@ urlpatterns = [
     url(r'^orders/(?P<pk>\d+)/status/$', orders.OrderInfoView.as_view(({'put':'status'}))),
     #
     url(r'^goods/categories/$', brands.BrandView.as_view(({'get': 'categories'}))),
+    #
+    url(r'^permission/simple/$', groups.GroupView.as_view({'get': 'simple'})),
 
 ]
 
@@ -65,5 +66,6 @@ router.register('goods', spus.SPUView, base_name='goods')
 # 权限路由
 router.register('permission/perms', permissions.PermissionView, base_name='perms')
 # 用户权限
+router.register('permission/groups', groups.GroupView, base_name='groups')
 urlpatterns += router.urls
 
