@@ -124,8 +124,8 @@ DATABASES = {
         'HOST': '127.0.0.1', # 数据库主机
         'PORT': 3306, # 数据库端口
         'USER': 'root', # 数据库用户名
-        'PASSWORD': 'mysql', # 数据库用户密码
-        'NAME': 'meiduo_mall_46' # 数据库名字
+        'PASSWORD': 'static', # 数据库用户密码
+        'NAME': 'meiduo_mall' # 数据库名字
     },
 }
 AUTH_USER_MODEL = 'users.User'

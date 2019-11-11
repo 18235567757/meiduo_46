@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
 
-from apps.admins.views import spce, static, users, options, images, orders, sku, spus
+from apps.admins.views import spce, static, users, options, images, orders, sku, spus, brands, permissions
 
 from rest_framework.routers import DefaultRouter
 
@@ -40,6 +40,10 @@ urlpatterns = [
     url(r'^goods/channel/categories/(?P<pk>\d+)/$', spus.SPUView.as_view(({'get': 'channel2'}))),
     # 上传图片
     url(r'^goods/images/$', spus.SPUView.as_view((({'post': 'images'})))),
+    # 修改订单状态信息
+    url(r'^orders/(?P<pk>\d+)/status/$', orders.OrderInfoView.as_view(({'put':'status'}))),
+    #
+    url(r'^goods/categories/$', brands.BrandView.as_view(({'get': 'categories'}))),
 
 ]
 
@@ -54,6 +58,12 @@ router.register('skus/images', images.SKUImageView, base_name='images')
 router.register('orders', orders.OrderInfoView, base_name='orders')
 # 商品sku路由
 router.register('skus', sku.SKUView, base_name='skus')
-# 商品SPU路由
+# 品牌路由
+router.register('goods/brands', brands.BrandView, base_name='brands')
+# 商品SPU路由   goods/(.*)
 router.register('goods', spus.SPUView, base_name='goods')
+# 权限路由
+router.register('permission/perms', permissions.PermissionView, base_name='perms')
+# 用户权限
 urlpatterns += router.urls
+

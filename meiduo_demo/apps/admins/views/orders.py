@@ -23,3 +23,15 @@ class OrderInfoView(ReadOnlyModelViewSet):
 
         else:
             return OrderInfo.objects.filter(order_id__contains=keyword)
+
+    def status(self, request, pk):
+        try:
+            order = OrderInfo.objects.get(order_id=pk)
+        except:
+            return Response({'error': '订单编号错误'}, status=400)
+        status = request.data.get('status')
+
+        order.status = status
+        order.save()
+
+        return Response({'status': status})
