@@ -14,7 +14,7 @@ class GoodsCategorySerializer(serializers.ModelSerializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     """
-    商品组类别序列化器
+    商品频道组序列化器
     """
 
     class Meta:
@@ -26,10 +26,10 @@ class ChannelsSerializer(serializers.ModelSerializer):
     """
     商品频道序列化器
     """
-    group_id = serializers.IntegerField(read_only=True)
-
+    group_id = serializers.PrimaryKeyRelatedField(read_only=True)
     group = serializers.StringRelatedField(read_only=True)
     category = serializers.StringRelatedField(read_only=True)
+    category_id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = GoodsChannel

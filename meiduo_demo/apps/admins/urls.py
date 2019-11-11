@@ -42,14 +42,16 @@ urlpatterns = [
     url(r'^goods/images/$', spus.SPUView.as_view(({'post': 'images'}))),
     # 修改订单状态信息
     url(r'^orders/(?P<pk>\d+)/status/$', orders.OrderInfoView.as_view(({'put': 'status'}))),
-    #
-    # url(r'^goods/categories/$', brands.BrandView.as_view({'get': 'categories'})),
+    # 商品频道选项
+    url(r'^goods/channel_types/$', channels.ChannelsView.as_view({'get': 'channel_types'})),
     #
     url(r'^permission/content_types/$', permissions.PermissionView.as_view({'get': 'simple'})),
     # 用户权限展示
     url(r'^permission/simple/$', groups.GroupView.as_view({'get': 'simple'})),
     # 管理员选项
-    url(r'^permission/groups/simple/$', admins.AdminView.as_view({'get': 'group'}))
+    url(r'^permission/groups/simple/$', admins.AdminView.as_view({'get': 'group'})),
+    # 商品分类
+    url(r'^goods/categories/$', channels.ChannelsView.as_view({'get': 'categories'}))
 
 ]
 
